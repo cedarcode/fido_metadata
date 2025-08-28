@@ -1,4 +1,4 @@
-name: Lint 
+name: Lint
 
 on: push
 
@@ -14,6 +14,6 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true # 'bundle install' and cache gems
-        ruby-version: "2.7" 
-    - name: Run Rubocop 
+        ruby-version: "3.4"
+    - name: Run Rubocop
       run: bundle exec rubocop
