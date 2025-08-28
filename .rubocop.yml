@@ -33,9 +33,6 @@ Security:
 Style/BlockComments:
   Enabled: true
 
-Style/BracesAroundHashParameters:
-  Enabled: true
-
 Style/CaseEquality:
   Enabled: true
 
@@ -181,10 +178,10 @@ Style/TrailingMethodEndStatement:
 Style/TrivialAccessors:
   Enabled: true
 
-Style/UnneededInterpolation:
+Style/RedundantInterpolation:
   Enabled: true
 
-Style/UnneededPercentQ:
+Style/RedundantPercentQ:
   Enabled: true
 
 Style/UnpackFirst:
