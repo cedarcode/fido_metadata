@@ -44,7 +44,7 @@ RSpec.describe FidoMetadata::Client do
       end
     end
 
-    subject { described_class.new.download_toc(uri, trusted_certs: [trusted_cert]) }
+    subject { described_class.new.download_toc(uri, algorithms: ["ES256", "RS256"], trusted_certs: [trusted_cert]) }
 
     context "when everything's in place" do
       it "returns a MetadataTOCPayload hash with the required keys" do
