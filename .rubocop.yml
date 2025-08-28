@@ -1,8 +1,5 @@
-inherit_mode:
-  merge:
-    - AllowedNames
-
 AllCops:
+  TargetRubyVersion: 2.7
   DisabledByDefault: true
   Exclude:
     - "gemfiles/**/*"
