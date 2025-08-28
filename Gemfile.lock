@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     fido_metadata (0.3.0)
+      base64 (>= 0.1.0)
       jwt (~> 2.0)
 
 GEM
@@ -57,7 +58,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  base64 (>= 0.1.0)
   fido_metadata!
   rake (~> 13.0)
   rspec (~> 3.8)
