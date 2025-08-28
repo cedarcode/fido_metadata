@@ -44,7 +44,7 @@ RSpec.describe FidoMetadata::Client do
       end
     end
 
-    subject { described_class.new.download_toc(uri, trusted_certs: [trusted_cert]) }
+    subject { described_class.new.download_toc(uri, algorithms: ["ES256", "RS256"], trusted_certs: [trusted_cert]) }
 
     context "when everything's in place" do
       it "returns a MetadataTOCPayload hash with the required keys" do
@@ -156,6 +156,21 @@ RSpec.describe FidoMetadata::Client do
           "/jurisdictionST=California/C=US/ST=Oregon/L=Beaverton/street=3855 Sw 153Rd Dr" \
           "/O=FIDO ALLIANCE, INC./CN=mds.fidoalliance.org."
         expect { subject }.to raise_error(described_class::UnverifiedSigningKeyError, error)
+      end
+    end
+
+    context "when a CRL url redirects to another url" do
+      let(:redirecting_url) do
+        { status: 302, headers: { location: "http://crl.globalsign.com/gs/redirected.crl" } }
+      end
+
+      before(:each) do
+        stub_request(:get, "http://crl.globalsign.com/gs/gsextendvalsha2g3r3.crl").to_return(redirecting_url)
+        stub_request(:get, "http://crl.globalsign.com/gs/redirected.crl").to_return(extendval_crl)
+      end
+
+      specify do
+        expect(subject).to include("nextUpdate", "entries", "no")
       end
     end
   end
