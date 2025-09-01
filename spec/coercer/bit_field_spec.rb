@@ -3,13 +3,13 @@
 require "spec_helper"
 require "fido_metadata/coercer/bit_field"
 
-RSpec.describe FidoMetadata::Coercer::BitField do
-  CONSTANTS = {
-    0b0001 => "foo",
-    0b0010 => "bar",
-    0b0100 => "baz",
-  }.freeze
+CONSTANTS = {
+  0b0001 => "foo",
+  0b0010 => "bar",
+  0b0100 => "baz",
+}.freeze
 
+RSpec.describe FidoMetadata::Coercer::BitField do
   context "multiple values" do
     subject { described_class.new(CONSTANTS, single_value: false).coerce(value) }
 
