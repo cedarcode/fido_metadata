@@ -79,7 +79,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  appraisal (~> 2.5.0)
+  appraisal (~> 2.5)
   fido_metadata!
   rake (~> 13.0)
   rspec (~> 3.8)

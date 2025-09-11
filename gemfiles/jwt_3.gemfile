@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "appraisal", "~> 2.5.0"
+gem "appraisal", "~> 2.5"
 gem "jwt", "~> 3"
 
 gemspec path: "../"
