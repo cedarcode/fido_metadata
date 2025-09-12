@@ -19,16 +19,18 @@ RSpec.describe FidoMetadata::Store do
   end
 
   let(:toc_entries) { [entry] }
+  let(:toc_next_update) { Date.today + 1 }
   let(:toc) do
     toc = FidoMetadata::TableOfContents.new
     toc.entries = toc_entries
+    toc.next_update = toc_next_update
     toc
   end
 
   let(:client) { instance_double(FidoMetadata::Client) }
 
   before do
-    FidoMetadata.configuration.cache_backend.write("metadata_toc", toc)
+    FidoMetadata.configuration.cache_backend.write(described_class::TOC_CACHE_KEY, toc)
     allow(FidoMetadata::Client).to receive(:new).and_return(client)
   end
 
@@ -62,7 +64,10 @@ RSpec.describe FidoMetadata::Store do
         before { FidoMetadata.configuration.cache_backend.clear }
 
         it "downloads and returns the TOC" do
-          expect(client).to receive(:download_toc).and_return("entries" => [{ "aaguid" => aaguid }])
+          expect(client).to receive(:download_toc).and_return(
+            "nextUpdate" => toc_next_update,
+            "entries" => [{ "aaguid" => aaguid }]
+          )
           expect(subject.aaguid).to eq(aaguid)
         end
       end
@@ -94,6 +99,7 @@ RSpec.describe FidoMetadata::Store do
 
         it "downloads and returns the TOC" do
           expect(client).to receive(:download_toc).and_return(
+            "nextUpdate" => toc_next_update,
             "entries" => [{ "attestationCertificateKeyIdentifiers" => [attestation_certificate_key_id] }]
           )
           expect(subject.attestation_certificate_key_identifiers).to eq([attestation_certificate_key_id])
@@ -104,7 +110,7 @@ RSpec.describe FidoMetadata::Store do
 
   describe "#fetch_statement" do
     context "AAGUID" do
-      let(:statement_cache_key) { "statement_#{aaguid}" }
+      let(:statement_cache_key) { described_class::STATEMENT_CACHE_KEY % aaguid }
 
       before do
         FidoMetadata.configuration.cache_backend.write(statement_cache_key, statement)
@@ -143,7 +149,7 @@ RSpec.describe FidoMetadata::Store do
         statement.attestation_certificate_key_identifiers = [attestation_certificate_key_id]
         statement
       end
-      let(:statement_cache_key) { "statement_#{attestation_certificate_key_id}" }
+      let(:statement_cache_key) { described_class::STATEMENT_CACHE_KEY % attestation_certificate_key_id }
 
       before do
         FidoMetadata.configuration.cache_backend.write(statement_cache_key, statement)

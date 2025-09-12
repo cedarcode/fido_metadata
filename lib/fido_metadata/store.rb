@@ -7,16 +7,18 @@ require "fido_metadata/statement"
 module FidoMetadata
   class Store
     METADATA_ENDPOINT = URI("https://mds.fidoalliance.org/")
+    TOC_CACHE_KEY = "metadata_toc"
+    STATEMENT_CACHE_KEY = "statement_%s"
 
     def table_of_contents
       @table_of_contents ||= begin
-        key = "metadata_toc"
+        key = TOC_CACHE_KEY
         toc = cache_backend.read(key)
         return toc if toc
 
         json = client.download_toc(METADATA_ENDPOINT)
         toc = FidoMetadata::TableOfContents.from_json(json)
-        cache_backend.write(key, toc)
+        cache_backend.write(key, toc, expires_in: toc.expires_in, race_condition_ttl: race_condition_ttl)
         toc
       end
     end
@@ -38,7 +40,7 @@ module FidoMetadata
     def fetch_statement(aaguid: nil, attestation_certificate_key_id: nil)
       verify_arguments(aaguid: aaguid, attestation_certificate_key_id: attestation_certificate_key_id)
 
-      key = "statement_#{aaguid || attestation_certificate_key_id}"
+      key = STATEMENT_CACHE_KEY % (aaguid || attestation_certificate_key_id)
       statement = cache_backend.read(key)
       return statement if statement
 
@@ -50,7 +52,12 @@ module FidoMetadata
       return unless entry
 
       statement = entry.metadata_statement
-      cache_backend.write(key, statement)
+      cache_backend.write(
+        key,
+        statement,
+        expires_in: table_of_contents.expires_in,
+        race_condition_ttl: race_condition_ttl
+      )
       statement
     end
 
@@ -68,6 +75,10 @@ module FidoMetadata
 
     def cache_backend
       FidoMetadata.configuration.cache_backend || raise("no cache_backend configured")
+    end
+
+    def race_condition_ttl
+      FidoMetadata.configuration.race_condition_ttl
     end
 
     def client
