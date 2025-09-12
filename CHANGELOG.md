@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.5.0] - 2025-09-12
 ### Added
+- Add support for FIDO MDS v3. ([#10](https://github.com/cedarcode/fido_metadata/pull/10))
 - Follow HTTP 302 redirects when downloading CRLs. ([#14](https://github.com/cedarcode/fido_metadata/pull/14))
 
 ### Changed
-- Switch to MDS single BLOB format and update metadata statement fields. ([#10](https://github.com/cedarcode/fido_metadata/pull/10))
 - Update `jwt` dependency to support both v2 and v3. ([#23](https://github.com/cedarcode/fido_metadata/pull/23))
 
 ## [0.4.0] - 2019-12-28
