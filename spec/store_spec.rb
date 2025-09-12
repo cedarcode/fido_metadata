@@ -9,7 +9,13 @@ RSpec.describe FidoMetadata::Store do
   let(:entry) do
     entry = FidoMetadata::Entry.new
     entry.aaguid = aaguid
+    entry.metadata_statement = statement
     entry
+  end
+  let(:statement) do
+    statement = FidoMetadata::Statement.new
+    statement.aaguid = aaguid
+    statement
   end
 
   let(:toc_entries) { [entry] }
@@ -25,7 +31,6 @@ RSpec.describe FidoMetadata::Store do
 
   before do
     FidoMetadata.configuration.cache_backend.write(described_class::TOC_CACHE_KEY, toc)
-    FidoMetadata.configuration.metadata_token = "foo"
     allow(FidoMetadata::Client).to receive(:new).and_return(client)
   end
 
@@ -36,12 +41,6 @@ RSpec.describe FidoMetadata::Store do
       FidoMetadata.configuration.cache_backend = nil
 
       expect { subject }.to raise_error(RuntimeError, "no cache_backend configured")
-    end
-
-    it "raises with no metadata service token" do
-      FidoMetadata.configuration.metadata_token = nil
-
-      expect { subject }.to raise_error(RuntimeError, "no metadata_token configured")
     end
   end
 
@@ -111,11 +110,6 @@ RSpec.describe FidoMetadata::Store do
 
   describe "#fetch_statement" do
     context "AAGUID" do
-      let(:statement) do
-        statement = FidoMetadata::Statement.new
-        statement.aaguid = aaguid
-        statement
-      end
       let(:statement_cache_key) { described_class::STATEMENT_CACHE_KEY % aaguid }
 
       before do
@@ -142,8 +136,7 @@ RSpec.describe FidoMetadata::Store do
         end
 
         context "the corresponding TOC entry is present " do
-          it "downloads and returns the statement" do
-            expect(client).to receive(:download_entry).and_return("aaguid" => aaguid)
+          it "returns the statement" do
             expect(subject.aaguid).to eq(aaguid)
           end
         end
@@ -185,13 +178,11 @@ RSpec.describe FidoMetadata::Store do
           let(:entry) do
             entry = FidoMetadata::Entry.new
             entry.attestation_certificate_key_identifiers = [attestation_certificate_key_id]
+            entry.metadata_statement = statement
             entry
           end
 
           it "downloads and returns the statement" do
-            expect(client).to receive(:download_entry).and_return(
-              "attestationCertificateKeyIdentifiers" => [attestation_certificate_key_id]
-            )
             expect(subject.attestation_certificate_key_identifiers).to match_array([attestation_certificate_key_id])
           end
         end

@@ -17,7 +17,6 @@ module FidoMetadata
   end
 
   class Configuration
-    attr_accessor :metadata_token
     attr_accessor :cache_backend
     attr_accessor :race_condition_ttl
   end

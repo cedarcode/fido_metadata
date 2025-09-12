@@ -3,12 +3,12 @@
 require "spec_helper"
 require "fido_metadata/coercer/magic_number"
 
-RSpec.describe FidoMetadata::Coercer::MagicNumber do
-  MAPPING = {
-    1 => "foo",
-    2 => "bar",
-  }.freeze
+MAPPING = {
+  1 => "foo",
+  2 => "bar",
+}.freeze
 
+RSpec.describe FidoMetadata::Coercer::MagicNumber do
   context "array: false" do
     subject { described_class.new(MAPPING, array: false).coerce(value) }
 

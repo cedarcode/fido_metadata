@@ -23,7 +23,7 @@ RSpec.describe FidoMetadata::X5cKeyFinder do
   let(:leaf_certificate) do
     cert = generate_cert(
       leaf_dn,
-      leaf_key,
+      leaf_key.public_key,
       leaf_serial,
       issuer: root_certificate,
       not_after: leaf_not_after
@@ -138,7 +138,7 @@ RSpec.describe FidoMetadata::X5cKeyFinder do
     OpenSSL::PKey::RSA.new(2048)
   end
 
-  # rubocop:disable Naming/UncommunicativeMethodParamName
+  # rubocop:disable Naming/MethodParameterName
   def generate_cert(dn, key, serial, issuer: nil, not_before: nil, not_after: nil)
     cert = OpenSSL::X509::Certificate.new
     issuer ||= cert
@@ -152,7 +152,7 @@ RSpec.describe FidoMetadata::X5cKeyFinder do
     cert.not_after = not_after || now + 3600
     cert
   end
-  # rubocop:enable Naming/UncommunicativeMethodParamName
+  # rubocop:enable Naming/MethodParameterName
 
   def issue_crl(revocations, last_up: nil, next_up: nil, issuer:, issuer_key:)
     crl = OpenSSL::X509::CRL.new

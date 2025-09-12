@@ -6,7 +6,7 @@ require "fido_metadata/statement"
 
 module FidoMetadata
   class Store
-    METADATA_ENDPOINT = URI("https://mds2.fidoalliance.org/")
+    METADATA_ENDPOINT = URI("https://mds.fidoalliance.org/")
     TOC_CACHE_KEY = "metadata_toc"
     STATEMENT_CACHE_KEY = "statement_%s"
 
@@ -51,8 +51,7 @@ module FidoMetadata
               end
       return unless entry
 
-      json = client.download_entry(entry.url, expected_hash: entry.hash)
-      statement = FidoMetadata::Statement.from_json(json)
+      statement = entry.metadata_statement
       cache_backend.write(
         key,
         statement,
@@ -78,16 +77,12 @@ module FidoMetadata
       FidoMetadata.configuration.cache_backend || raise("no cache_backend configured")
     end
 
-    def metadata_token
-      FidoMetadata.configuration.metadata_token || raise("no metadata_token configured")
-    end
-
     def race_condition_ttl
       FidoMetadata.configuration.race_condition_ttl
     end
 
     def client
-      @client ||= FidoMetadata::Client.new(metadata_token)
+      @client ||= FidoMetadata::Client.new
     end
   end
 end
