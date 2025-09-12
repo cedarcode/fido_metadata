@@ -19,12 +19,12 @@ RSpec.describe FidoMetadata::TableOfContents do
   end
 
   describe "#expires_in" do
-    it "returns the number of seconds until nextUpdate" do
+    it "calculates in how much seconds it will expire" do
       toc = described_class.from_json("nextUpdate" => "2025-01-02T00:00:00Z")
       expect(toc.expires_in).to eq(86_400)
     end
 
-    it "can return a negative number when nextUpdate is in the past" do
+    it "calculates negative seconds if already expired" do
       toc = described_class.from_json("nextUpdate" => "2024-12-31T23:59:00Z")
       expect(toc.expires_in).to eq(-86_400)
     end
