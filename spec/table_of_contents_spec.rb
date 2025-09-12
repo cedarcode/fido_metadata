@@ -1,22 +1,32 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "fido_metadata/statement"
+require "fido_metadata/table_of_contents"
 
 RSpec.describe FidoMetadata::TableOfContents do
-  let(:file) { File.read(SUPPORT_PATH.join("mds_toc.txt")) }
-  let(:current_time) { Time.utc(2019, 12, 28) }
+  let(:current_time) { Time.utc(2025, 1, 1, 0, 0, 0) }
 
-  before(:each) do
+  # Set timezone to UTC for the duration of the tests
+  around do |ex|
+    orig_tz = ENV["TZ"]
+    ENV["TZ"] = "UTC"
+    ex.run
+    ENV["TZ"] = orig_tz
+  end
+
+  before do
     allow(Time).to receive(:now).and_return(current_time)
   end
 
-  subject do
-    json, _ = JWT.decode(file, nil, false, algorithms: ["ES256"])
-    described_class.from_json(json)
-  end
+  describe "#expires_in" do
+    it "returns the number of seconds until nextUpdate" do
+      toc = described_class.from_json("nextUpdate" => "2025-01-02T00:00:00Z")
+      expect(toc.expires_in).to eq(86_400)
+    end
 
-  it "#expires_in calculates in how much seconds it will expire" do
-    expect(subject.expires_in).to eq(9172800)
+    it "can return a negative number when nextUpdate is in the past" do
+      toc = described_class.from_json("nextUpdate" => "2024-12-31T23:59:00Z")
+      expect(toc.expires_in).to eq(-86_400)
+    end
   end
 end
