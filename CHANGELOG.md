@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2025-09-12
+### Added
+- Add support for FIDO MDS v3. ([#10](https://github.com/cedarcode/fido_metadata/pull/10))
+- Follow HTTP 302 redirects when downloading CRLs. ([#14](https://github.com/cedarcode/fido_metadata/pull/14))
+
+### Changed
+- Update `jwt` dependency to support both v2 and v3. ([#23](https://github.com/cedarcode/fido_metadata/pull/23))
+
 ## [0.4.0] - 2019-12-28
 ### Added
 - Set `expires_in` and `race_condition_ttl` options during caching.
@@ -29,8 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Extracted from [webauthn-ruby PR 208](https://github.com/cedarcode/webauthn-ruby/pull/208) after discussion with the maintainers. Thanks for the feedback @grzuy and @brauliomartinezlm!
 
-[Unreleased]: https://github.com/bdewater/fido_metadata/compare/v0.2.0...HEAD
-[0.4.0]: https://github.com/bdewater/fido_metadata/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/bdewater/fido_metadata/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/bdewater/fido_metadata/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/bdewater/fido_metadata/releases/tag/v0.1.0
+[Unreleased]: https://github.com/cedarcode/fido_metadata/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/cedarcode/fido_metadata/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/cedarcode/fido_metadata/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/cedarcode/fido_metadata/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/cedarcode/fido_metadata/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/cedarcode/fido_metadata/releases/tag/v0.1.0
